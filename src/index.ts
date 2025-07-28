@@ -13,18 +13,16 @@ const app = new Hono();
 });
 */
 // or
-function authMiddleware(c: any, next: any) {
+async function authMiddleware(c: any, next: any) {
     if (c.req.header("Authorization")) {
-        return next();
+        await next();
     } else {
         return c.json({
             msg: "You don't have access",
         });
     }
 }
-app.use(authMiddleware);
-
-app.get("/", async (c) => {
+app.get("/", authMiddleware, async (c) => {
     const body = await c.req.json();
     console.log(body);
     console.log(c.req.header("Authorization"));
